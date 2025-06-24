@@ -100,7 +100,6 @@ subprojects {
                 includeGroup("com.jozufozu.flywheel")
             }
         }
-        maven("https://maven.ithundxr.dev/mirror")
     }
 
     @Suppress("UnstableApiUsage")
