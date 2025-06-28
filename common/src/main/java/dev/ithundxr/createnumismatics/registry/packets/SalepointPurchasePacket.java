@@ -18,11 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDeductable;
-import dev.ithundxr.createnumismatics.content.backend.IDeductable;
-import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
-import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
-import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseMenu;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,19 +38,6 @@ public record SalepointPurchasePacket(int multiplier) implements C2SPacket {
 
     @Override
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof SalepointPurchaseMenu salepointPurchaseMenu) {
-            SalepointBlockEntity salepointBE = salepointPurchaseMenu.contentHolder;
 
-            if (multiplier == 0) {
-                salepointBE.cancelTransaction();
-                return;
-            }
-
-            IAuthorizationCheckingDeductable deductable = IDeductable.getAuthorizationChecking(salepointPurchaseMenu.getCard(), sender, ReasonHolder.IGNORED);
-            if (deductable == null)
-                return;
-
-            salepointBE.startTransaction(deductable, multiplier);
-        }
     }
 }

@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
-import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,8 +40,5 @@ public record OpenSubAccountEditScreenPacket(@Nullable UUID subAccountID) implem
 
     @Override
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
-            subAccountListMenu.openSubAccountEditScreen(subAccountID);
-        }
     }
 }

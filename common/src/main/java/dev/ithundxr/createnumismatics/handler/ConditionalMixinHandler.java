@@ -26,7 +26,6 @@ package dev.ithundxr.createnumismatics.handler;
 
 import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
 import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
-import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.util.Utils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -50,13 +49,6 @@ public class ConditionalMixinHandler {
 
             boolean shouldApply = true;
             for (AnnotationNode node : annotationNodes) {
-                if (node.desc.equals(Type.getDescriptor(ConditionalMixin.class))) {
-                    List<Mods> mods = Annotations.getValue(node, "mods", true, Mods.class);
-                    boolean applyIfPresent = Annotations.getValue(node, "applyIfPresent", Boolean.TRUE);
-                    boolean anyModsLoaded = anyModsLoaded(mods);
-                    shouldApply = anyModsLoaded == applyIfPresent;
-                    logger.log("{} is{}being applied because the mod(s) {} are{}loaded", className, shouldApply ? " " : " not ", mods, anyModsLoaded ? " " : " not ");
-                }
                 if (node.desc.equals(Type.getDescriptor(DevMixin.class))) {
                     shouldApply &= Utils.isDevEnv();
                     logger.log("{} is {}being applied because we are {}in a development environment", className, shouldApply ? "" : "not ", Utils.isDevEnv() ? "" : "not ");
@@ -66,12 +58,5 @@ public class ConditionalMixinHandler {
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static boolean anyModsLoaded(List<Mods> mods) {
-        for (Mods mod : mods) {
-            if (mod.isLoaded) return true;
-        }
-        return false;
     }
 }

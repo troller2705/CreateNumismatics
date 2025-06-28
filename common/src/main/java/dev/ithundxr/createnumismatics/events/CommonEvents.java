@@ -18,15 +18,10 @@
 
 package dev.ithundxr.createnumismatics.events;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.event.MultiLoaderEvent;
 import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
-import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
-import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.ChatFormatting;
@@ -44,9 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.Collection;
 
 public class CommonEvents {
-    public static void onLoadWorld(LevelAccessor world) {
-        Numismatics.BANK.levelLoaded(world);
-    }
 
     /**
      * @return true if the block may be broken, false otherwise
@@ -62,13 +54,8 @@ public class CommonEvents {
             mayBreak = conditionalBreak.mayBreak(level, pos, state, player);
         }
 
-        if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isCrouching() && trustedBlock.isTrusted(player, level, pos)) {
-            player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break", Components.keybind("key.sneak"))
-                    .withStyle(ChatFormatting.DARK_RED), true);
-        }
 
 
-        mayBreak &= !(state.getBlock() instanceof TrustedBlock trustedBlock) || (player.isShiftKeyDown() && trustedBlock.isTrusted(player, level, pos));
 
 
         if (!mayBreak && state.getBlock() instanceof NotifyFailedBreak notifyFailedBreak) {
@@ -79,16 +66,7 @@ public class CommonEvents {
 
     @MultiLoaderEvent
     public static void onPlayerJoin(ServerPlayer player) {
-        for (BankAccount account : Numismatics.BANK.accounts.values()) {
-            NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
 
-            Collection<SubAccount> subAccounts = account.getSubAccounts();
-            if (subAccounts != null) {
-                for (SubAccount subAccount : subAccounts) {
-                    NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(subAccount));
-                }
-            }
-        }
     }
 
     @MultiLoaderEvent
@@ -100,9 +78,7 @@ public class CommonEvents {
             && !player.getOffhandItem().isEmpty()
             && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
             hand.equals(InteractionHand.MAIN_HAND);
-        if ((offhandFix || player.isShiftKeyDown()) && state.getBlock() instanceof VendorBlock vb) {
-            return vb.use(state, level, pos, player, hand, hitResult);
-        }
+
 
         return InteractionResult.PASS;
     }

@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,14 +31,6 @@ public class OpenSubAccountsMenuPacket implements C2SPacket {
     private final UUID accountID;
     private final boolean open;
 
-    public OpenSubAccountsMenuPacket(BankAccount bankAccount) {
-        this(bankAccount, true);
-    }
-
-    public OpenSubAccountsMenuPacket(BankAccount bankAccount, boolean open) {
-        this.accountID = bankAccount.id;
-        this.open = open;
-    }
 
     public OpenSubAccountsMenuPacket(FriendlyByteBuf buf) {
         accountID = buf.readUUID();
@@ -54,13 +45,6 @@ public class OpenSubAccountsMenuPacket implements C2SPacket {
 
     @Override
     public void handle(ServerPlayer sender) {
-        BankAccount account = Numismatics.BANK.getAccount(accountID);
-        if (account != null && account.isAuthorized(sender)) {
-            if (open) {
-                account.openSubAccountsMenu(sender);
-            } else {
-                Utils.openScreen(sender, account, account::sendToMenu);
-            }
-        }
+
     }
 }

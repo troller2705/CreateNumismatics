@@ -20,8 +20,6 @@ package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
 import dev.ithundxr.createnumismatics.util.PacketUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +54,6 @@ public class BigStackSizeContainerSetSlotPacket implements S2CPacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void handle(Minecraft mc) {
         Player player = mc.player;
         // IntelliJ falsely thinks that player.containerMenu is never null

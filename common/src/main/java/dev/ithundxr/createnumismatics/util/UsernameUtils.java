@@ -51,15 +51,7 @@ public enum UsernameUtils {
         if (uuid == null) return defaultName;
         if (!uuidNameMap.containsKey(uuid)) {
             MutableObject<String> result = new MutableObject<>(null);
-            Env.CLIENT.runIfCurrent(() -> () -> {
-                if (Minecraft.getInstance().getUser().getUuid().equals(uuid.toString())) {
-                    uuidNameMap.put(uuid, Minecraft.getInstance().getUser().getName());
-                    result.setValue(uuidNameMap.get(uuid));
-                }
-                if (NumismaticsClient.bankAccountLabels.containsKey(uuid)) {
-                    result.setValue(NumismaticsClient.bankAccountLabels.get(uuid));
-                }
-            });
+
             if (result.getValue() != null) {
                 return result.getValue();
             }

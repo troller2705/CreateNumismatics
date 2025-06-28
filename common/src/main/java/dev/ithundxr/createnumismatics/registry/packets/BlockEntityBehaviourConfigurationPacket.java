@@ -21,9 +21,7 @@ package dev.ithundxr.createnumismatics.registry.packets;
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -63,13 +61,6 @@ public abstract class BlockEntityBehaviourConfigurationPacket<B extends BlockEnt
             return;
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof SyncedBlockEntity sbe) {
-            if (blockEntity instanceof Trusted trusted && !trusted.isTrusted(sender)) {
-                Numismatics.LOGGER.error("Illegal configuration of %s at %s attempted by player %s".formatted(
-                    blockEntity, pos, sender
-                ));
-                sender.connection.disconnect(Components.literal("Haxx: Illegal block entity configuration attempt"));
-                return;
-            }
             B behaviour = BlockEntityBehaviour.get(sbe, getType());
             if (behaviour != null) {
                 applySettings(sender, behaviour);

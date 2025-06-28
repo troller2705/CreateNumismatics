@@ -19,19 +19,20 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.simibubi.create.foundation.gui.UIRenderHelper;
-import com.simibubi.create.foundation.gui.element.ScreenElement;
-import com.simibubi.create.foundation.utility.Color;
+
 import dev.ithundxr.createnumismatics.Numismatics;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
+import net.createmod.catnip.gui.UIRenderHelper;
+import net.createmod.catnip.gui.element.ScreenElement;
+import net.createmod.catnip.theme.Color;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 /*
 Copied from Create
  */
-public enum NumismaticsGuiTextures implements ScreenElement {
+public enum NumismaticsGuiTextures implements ScreenElement
+{
 
     ANDESITE_DEPOSITOR("andesite_depositor", 182, 79),
     BRASS_DEPOSITOR("brass_depositor", 208, 145),
@@ -78,26 +79,23 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     }
 
     private NumismaticsGuiTextures(String namespace, String location, int startX, int startY, int width, int height) {
-        this.location = new ResourceLocation(namespace, "textures/gui/" + location + ".png");
+        this.location = ResourceLocation.fromNamespaceAndPath(namespace, "textures/gui/" + location + ".png");
         this.width = width;
         this.height = height;
         this.startX = startX;
         this.startY = startY;
     }
 
-    @Environment(EnvType.CLIENT)
     public void bind() {
         RenderSystem.setShaderTexture(0, location);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void render(GuiGraphics graphics, int x, int y) {
         bind();
         graphics.blit(location, x, y, 0, startX, startY, width, height, 256, 256);
     }
 
-    @Environment(EnvType.CLIENT)
     public void render(GuiGraphics graphics, int x, int y, Color c) {
         bind();
         UIRenderHelper.drawColoredTexture(graphics, c, x, y, startX, startY, width, height);

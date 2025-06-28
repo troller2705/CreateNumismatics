@@ -19,8 +19,6 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +49,6 @@ public class VarIntContainerSetDataPacket implements S2CPacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void handle(Minecraft mc) {
         Player player = mc.player;
         // IntelliJ falsely things that player.containerMenu is never null

@@ -18,8 +18,6 @@
 
 package dev.ithundxr.createnumismatics.multiloader;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -47,13 +45,12 @@ public enum Loader {
     // Returns the actual loader, ex: quilt on quilt instead of fabric for quilt
     public static Loader getActual() {
         //noinspection ConstantValue
-        if (FABRIC.isCurrent() && Mods.isModLoaded("quilt_loader"))
+        if (FABRIC.isCurrent())
             return QUILT;
         return CURRENT;
     }
 
     @Internal
-    @ExpectPlatform
     private static Loader getCurrent() {
         throw new AssertionError();
     }

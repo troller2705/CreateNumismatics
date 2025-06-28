@@ -18,8 +18,6 @@
 
 package dev.ithundxr.createnumismatics.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -35,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-@Environment(EnvType.CLIENT)
 public class ClientCraftingUtils {
     /**
      * Apply stacking crafts to an item stack.
@@ -65,52 +62,16 @@ public class ClientCraftingUtils {
         if (!enchantedBook.is(Items.ENCHANTED_BOOK))
             return Result.failureReplace(enchantedBook.copy());
 
-        if (EnchantedBookItem.getEnchantments(enchantedBook).isEmpty())
-            return Result.failureKeep();
 
         targetStack = targetStack.copy();
 
-        Map<Enchantment, Integer> targetEnchants = EnchantmentHelper.getEnchantments(targetStack);
-        Map<Enchantment, Integer> bookEnchants = EnchantmentHelper.getEnchantments(enchantedBook);
         boolean someEnchantsSucceeded = false;
         boolean someEnchantsFailed = false;
 
-        for (Enchantment bookEnchantment : bookEnchants.keySet()) {
-            if (bookEnchantment == null)
-                continue;
-
-            int existingLevel = targetEnchants.getOrDefault(bookEnchantment, 0);
-            int bookLevel = bookEnchants.get(bookEnchantment);
-
-            if (existingLevel == bookLevel)
-                bookLevel++;
-            else
-                bookLevel = Math.max(bookLevel, existingLevel);
-
-            boolean ok = bookEnchantment.canEnchant(targetStack) || targetStack.is(Items.ENCHANTED_BOOK);
-
-            for (Enchantment existingEnchantment : targetEnchants.keySet()) {
-                if (existingEnchantment != bookEnchantment && !bookEnchantment.isCompatibleWith(existingEnchantment)) {
-                    ok = false;
-                }
-            }
-
-            if (!ok) {
-                someEnchantsFailed = true;
-            } else {
-                someEnchantsSucceeded = true;
-
-                if (bookLevel > bookEnchantment.getMaxLevel())
-                    bookLevel = bookEnchantment.getMaxLevel();
-
-                targetEnchants.put(bookEnchantment, bookLevel);
-            }
-        }
 
         if (someEnchantsFailed && !someEnchantsSucceeded)
             return Result.failureKeep();
 
-        EnchantmentHelper.setEnchantments(targetEnchants, targetStack);
         return Result.ok(targetStack);
     }
 
@@ -131,18 +92,7 @@ public class ClientCraftingUtils {
         CraftingContainer craftingContainer = new SimpleCraftingContainer(2, 1);
         craftingContainer.setItem(0, targetStack);
         craftingContainer.setItem(1, dye$);
-
-        return mc.level.getRecipeManager()
-            .getRecipes()
-            .stream()
-            .filter(recipe -> recipe instanceof ArmorDyeRecipe)
-            .map(recipe -> (ArmorDyeRecipe) recipe)
-            .filter(recipe -> recipe.matches(craftingContainer, mc.level))
-            .findFirst()
-            .map(recipe -> recipe.assemble(craftingContainer, mc.level.registryAccess()))
-            .filter(result -> !result.isEmpty())
-            .map(Result::ok)
-            .orElseGet(() -> Result.failureReplace(dye$));
+        return null;
     }
 
     private static class SimpleCraftingContainer extends SimpleContainer implements CraftingContainer {
@@ -167,10 +117,6 @@ public class ClientCraftingUtils {
             return height;
         }
 
-        @Override
-        public @NotNull List<ItemStack> getItems() {
-            return items;
-        }
     }
 
     public static class Result {

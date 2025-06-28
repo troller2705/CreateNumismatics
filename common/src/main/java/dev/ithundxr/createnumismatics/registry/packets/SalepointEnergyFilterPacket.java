@@ -18,31 +18,18 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
-import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
-import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public record SalepointEnergyFilterPacket(Energy filter) implements C2SPacket {
-
-    public SalepointEnergyFilterPacket(FriendlyByteBuf buf) {
-        this(Energy.readFromPacket(buf));
-    }
+public record SalepointEnergyFilterPacket() implements C2SPacket {
 
     @Override
     public void write(FriendlyByteBuf buffer) {
-        filter.writeToPacket(buffer);
     }
 
     @Override
     @SuppressWarnings("DataFlowIssue")
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof SalepointConfigMenu salepointConfigMenu) {
-            if (salepointConfigMenu.getSalepointState() instanceof EnergySalepointState energySalepointState) {
-                energySalepointState.setFilter(filter, salepointConfigMenu.contentHolder.getLevel(), salepointConfigMenu.contentHolder.getBlockPos(), sender);
-            }
-        }
     }
 }

@@ -21,7 +21,6 @@ package dev.ithundxr.createnumismatics.registry;
 import com.google.common.collect.Sets;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement;
-import dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement.Builder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -39,8 +38,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement.TaskType.SECRET;
-import static dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement.TaskType.SILENT;
 
 public class NumismaticsAdvancements implements DataProvider {
 
@@ -52,41 +49,13 @@ public class NumismaticsAdvancements implements DataProvider {
 	 * (Advancement ordering seems to be deterministic but hash based)
 	 */
 
-	ROOT = create("root", b -> b.icon(Coin.CROWN.asStack())
-		.title("Welcome to Numismatics")
-		.description("Here Be Riches")
-		.awardedForFree()
-		.special(SILENT)),
 
 	// Special advancements
 
-	MONEY_LAUNDERING = create("money_laundering", b -> b.icon(Items.WATER_BUCKET)
-		.title("Money Laundering")
-		.description("Buy coins in a vendor")
-		.after(ROOT)
-		.special(SECRET)
-	),
-
-	QUESTIONABLE_INVESTMENT = create("questionable_investment", b -> b.icon(Coin.SPUR.asStack())
-		.title("Questionable Investment")
-		.description("Buy coins for more than they are worth")
-		.after(MONEY_LAUNDERING)
-		.special(SECRET)
-	),
-
-	IS_THIS_LEGAL = create("is_this_legal", b -> b.icon(Coin.SUN.asStack())
-		.title("Is This Legal?")
-		.description("Buy coins for less than they are worth")
-		.after(MONEY_LAUNDERING)
-		.special(SECRET)
-	),
 
 	//
 	END = null;
 
-	private static NumismaticsAdvancement create(String id, UnaryOperator<Builder> b) {
-		return new NumismaticsAdvancement(id, b);
-	}
 
 	// Datagen
 
@@ -102,17 +71,7 @@ public class NumismaticsAdvancements implements DataProvider {
 		List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		Set<ResourceLocation> set = Sets.newHashSet();
-		Consumer<Advancement> consumer = (advancement) -> {
-			ResourceLocation id = advancement.getId();
-			if (!set.add(id))
-				throw new IllegalStateException("Duplicate advancement " + id);
-			Path path = pathProvider.json(id);
-			futures.add(DataProvider.saveStable(cache, advancement.deconstruct()
-				.serializeToJson(), path));
-		};
 
-		for (NumismaticsAdvancement advancement : ENTRIES)
-			advancement.save(consumer);
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}

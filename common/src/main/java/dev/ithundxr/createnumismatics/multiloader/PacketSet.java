@@ -18,17 +18,13 @@
 
 package dev.ithundxr.createnumismatics.multiloader;
 
-import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.simibubi.create.foundation.utility.Components;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +33,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -72,14 +69,13 @@ public abstract class PacketSet {
 		this.c2sPackets = c2sPackets;
 		this.c2sTypes = c2sTypes;
 
-		c2sPacket = new ResourceLocation(id, "c2s");
-		s2cPacket = new ResourceLocation(id, "s2c");
+		c2sPacket = ResourceLocation.fromNamespaceAndPath(id, "c2s");
+		s2cPacket = ResourceLocation.fromNamespaceAndPath(id, "s2c");
 	}
 
 	/**
 	 * Send the given C2S packet to the server.
 	 */
-	@Environment(EnvType.CLIENT)
 	public void send(C2SPacket packet) {
 		int i = idOfC2S(packet);
 		if (i != -1) {
@@ -92,11 +88,6 @@ public abstract class PacketSet {
 		}
 	}
 
-	/**
-	 * Send one of Create's packets to the server.
-	 */
-	@Environment(EnvType.CLIENT)
-	public abstract void send(SimplePacketBase packet);
 
 	/**
 	 * Send the given S2C packet to the given player.
@@ -105,10 +96,6 @@ public abstract class PacketSet {
 		sendTo(PlayerSelection.of(player), packet);
 	}
 
-	/**
-	 * Send the given Create packet to the given player.
-	 */
-	public abstract void sendTo(ServerPlayer player, SimplePacketBase packet);
 
 	/**
 	 * Send the given S2C packet to the given players.
@@ -125,16 +112,10 @@ public abstract class PacketSet {
 		}
 	}
 
-	/**
-	 * Send the given Create packet to the given players.
-	 */
-	public abstract void sendTo(PlayerSelection selection, SimplePacketBase packet);
 
-	@Environment(EnvType.CLIENT)
 	public abstract void registerS2CListener();
 	public abstract void registerC2SListener();
 
-	@Environment(EnvType.CLIENT)
 	protected abstract void doSendC2S(FriendlyByteBuf buf);
 
 	protected int idOfC2S(C2SPacket packet) {
@@ -145,7 +126,6 @@ public abstract class PacketSet {
 		return s2cTypes.getOrDefault(packet.getClass(), -1);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@Internal
 	public void handleS2CPacket(Minecraft mc, FriendlyByteBuf buf) {
 		int i = buf.readVarInt();
@@ -170,7 +150,6 @@ public abstract class PacketSet {
 		sender.server.execute(() -> packet.handle(sender));
 	}
 
-	@ExpectPlatform
 	@Internal
 	public static PacketSet create(String id, int version,
 								   List<Function<FriendlyByteBuf, S2CPacket>> s2cPackets,
@@ -208,9 +187,8 @@ public abstract class PacketSet {
 		public void handle(Minecraft mc) {
 			if (NumismaticsPackets.PACKETS.version == serverVersion)
 				return;
-			Component error = Components.literal(Numismatics.NAME+" on the client uses a different network format than the server.")
+			Component error = Component.literal(Numismatics.NAME+" on the client uses a different network format than the server.")
 					.append(" You should use the same version of the mod on both sides.");
-			mc.getConnection().onDisconnect(error);
 		}
 	}
 

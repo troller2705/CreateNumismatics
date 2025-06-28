@@ -18,10 +18,12 @@
 
 package dev.ithundxr.createnumismatics.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
+
+import net.createmod.catnip.config.ConfigBase;
 
 @SuppressWarnings("unused")
-public class CServer extends ConfigBase {
+public class CServer extends ConfigBase
+{
 
     public final ConfigGroup coins = group(0, "coins", Comments.coins);
 

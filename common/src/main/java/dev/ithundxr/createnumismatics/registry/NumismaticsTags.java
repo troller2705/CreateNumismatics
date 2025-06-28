@@ -18,9 +18,9 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -82,7 +82,7 @@ public class NumismaticsTags {
     }
 
     AllBlockTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
-      ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
+      ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace.id, path == null ? Lang.asId(name()) : path);
       tag = optionalTag(BuiltInRegistries.BLOCK, id);
     }
 
@@ -132,7 +132,7 @@ public class NumismaticsTags {
     }
 
     AllItemTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
-      ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
+      ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace.id, path == null ? Lang.asId(name()) : path);
       tag = optionalTag(BuiltInRegistries.ITEM, id);
       this.alwaysDatagen = alwaysDatagen;
     }

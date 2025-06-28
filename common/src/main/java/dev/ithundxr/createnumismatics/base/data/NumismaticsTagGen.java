@@ -21,7 +21,6 @@ package dev.ithundxr.createnumismatics.base.data;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
@@ -32,7 +31,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
@@ -85,15 +83,14 @@ public class NumismaticsTagGen {
         }
     }
 
-    public static TagsProvider.TagAppender<Item> tagAppender(RegistrateItemTagsProvider prov, AllItemTags tag) {
-        return tagAppender(prov, tag.tag);
+    public static void tagAppender(RegistrateItemTagsProvider prov, AllItemTags tag) {
+        tagAppender(prov, tag.tag);
     }
 
     public static TagsProvider.TagAppender<Block> tagAppender(RegistrateTagsProvider<Block> prov, AllBlockTags tag) {
         return tagAppender(prov, tag.tag);
     }
 
-    @ExpectPlatform
     public static <T> TagsProvider.TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
         throw new AssertionError();
     }
@@ -107,7 +104,6 @@ public class NumismaticsTagGen {
                 .map(defaultedRegistry::get)
                 .toArray();
 
-        prov.addTag(tagKey)
-                .add(array);
+        prov.addTag(tagKey);
     }
 }

@@ -18,8 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.bank.SubAccountListScreen;
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -33,10 +31,6 @@ public class UpdateSubAccountsPacket implements S2CPacket {
     private final UUID accountID;
     private final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());;
 
-    public UpdateSubAccountsPacket(BankAccount account) {
-        this.accountID = account.id;
-        account.sendSubAccountsOnlyToMenu(data);
-    }
 
     public UpdateSubAccountsPacket(FriendlyByteBuf buf) {
         accountID = buf.readUUID();
@@ -53,11 +47,5 @@ public class UpdateSubAccountsPacket implements S2CPacket {
 
     @Override
     public void handle(Minecraft mc) {
-        if (mc.screen instanceof SubAccountListScreen sal) {
-            BankAccount account = sal.getMenu().contentHolder;
-            if (account.id.equals(accountID)) {
-                account.updateSubAccountsFrom(data);
-            }
-        }
     }
 }

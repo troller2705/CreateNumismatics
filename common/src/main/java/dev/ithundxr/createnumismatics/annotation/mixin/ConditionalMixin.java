@@ -24,7 +24,6 @@
 
 package dev.ithundxr.createnumismatics.annotation.mixin;
 
-import dev.ithundxr.createnumismatics.compat.Mods;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,7 +33,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConditionalMixin {
-    Mods[] mods();
 
     boolean applyIfPresent() default true;
 }

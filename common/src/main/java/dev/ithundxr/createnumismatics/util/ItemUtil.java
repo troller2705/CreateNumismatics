@@ -90,7 +90,7 @@ public class ItemUtil {
             while(!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 //Slot slot = this.slots.get(i);
                 ItemStack itemStack = target.getItem(i);
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack)) {
+                if (!itemStack.isEmpty()) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxStackSize()) {
                         stack.setCount(0);
@@ -182,7 +182,7 @@ public class ItemUtil {
     public static boolean copyInto(SimpleContainer source, SimpleContainer target) {
         boolean changed = false;
         for (int i = 0; i < source.getContainerSize(); i++) {
-            if (!changed && (!ItemStack.isSameItemSameTags(source.getItem(i), target.getItem(i)) || source.getItem(i).getCount() != target.getItem(i).getCount())) {
+            if (!changed || source.getItem(i).getCount() != target.getItem(i).getCount()) {
                 changed = true;
             }
             target.setItem(i, source.getItem(i).copy());

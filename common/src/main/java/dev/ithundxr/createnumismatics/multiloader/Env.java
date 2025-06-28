@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.multiloader;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import java.util.function.Supplier;
@@ -45,7 +44,6 @@ public enum Env {
 	}
 
 	@Internal
-	@ExpectPlatform
 	public static Env getCurrent() {
 		throw new AssertionError();
 	}

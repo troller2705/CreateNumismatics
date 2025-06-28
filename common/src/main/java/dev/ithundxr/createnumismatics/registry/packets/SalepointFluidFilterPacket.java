@@ -18,8 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
-import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,10 +37,6 @@ public record SalepointFluidFilterPacket(MultiloaderFluidStack filter) implement
     @Override
     @SuppressWarnings("DataFlowIssue")
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof SalepointConfigMenu salepointConfigMenu) {
-            if (salepointConfigMenu.getSalepointState() instanceof FluidSalepointState fluidSalepointState) {
-                fluidSalepointState.setFilter(filter, salepointConfigMenu.contentHolder.getLevel(), salepointConfigMenu.contentHolder.getBlockPos(), sender);
-            }
-        }
+
     }
 }

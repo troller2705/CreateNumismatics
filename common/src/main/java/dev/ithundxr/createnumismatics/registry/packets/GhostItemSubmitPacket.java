@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.backend.IGhostItemMenu;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,22 +25,14 @@ import net.minecraft.world.item.ItemStack;
 
 public record GhostItemSubmitPacket(int slot, ItemStack stack) implements C2SPacket {
 
-    public GhostItemSubmitPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readItem());
-    }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeVarInt(slot);
-        buffer.writeItem(stack);
     }
 
     @Override
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof IGhostItemMenu ghostItemMenu) {
-            if (ghostItemMenu.isSlotGhost(slot)) {
-                ghostItemMenu.setGhostStackInSlot(slot, stack);
-            }
-        }
+
     }
 }

@@ -22,11 +22,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.DelegatedStencilElement;
-import com.simibubi.create.foundation.utility.Color;
 import dev.ithundxr.createnumismatics.Numismatics;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.createmod.catnip.gui.element.DelegatedStencilElement;
+import net.createmod.catnip.theme.Color;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -83,12 +81,10 @@ public class NumismaticsIcons extends AllIcons {
         return new NumismaticsIcons(x = 0, ++y);
     }
 
-    @Environment(EnvType.CLIENT)
     public void bind() {
         RenderSystem.setShaderTexture(0, ICON_ATLAS);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void render(GuiGraphics graphics, int x, int y) {
         if (isCoin) { // essential to make coins look decent in scroll options
@@ -97,7 +93,6 @@ public class NumismaticsIcons extends AllIcons {
         graphics.blit(ICON_ATLAS, x, y, 0, iconX, iconY, 16, 16, 256, 256);
     }
 
-    @Environment(EnvType.CLIENT)
     public void render(PoseStack ms, MultiBufferSource buffer, int color) {
         VertexConsumer builder = buffer.getBuffer(RenderType.text(ICON_ATLAS));
         Matrix4f matrix = ms.last().pose();
@@ -120,16 +115,14 @@ public class NumismaticsIcons extends AllIcons {
         vertex(builder, matrix, vec4, rgb, u2, v1, light);
     }
 
-    @Environment(EnvType.CLIENT)
     private void vertex(VertexConsumer builder, Matrix4f matrix, Vec3 vec, Color rgb, float u, float v, int light) {
-        builder.vertex(matrix, (float) vec.x, (float) vec.y, (float) vec.z)
-                .color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), 255)
-                .uv(u, v)
-                .uv2(light)
-                .endVertex();
+//        builder.vertex(matrix, (float) vec.x, (float) vec.y, (float) vec.z)
+//                .color(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), 255)
+//                .uv(u, v)
+//                .uv2(light)
+//                .endVertex();
     }
 
-    @Environment(EnvType.CLIENT)
     public DelegatedStencilElement asStencil() {
         return new DelegatedStencilElement().withStencilRenderer((ms, w, h, alpha) -> this.render(ms, 0, 0)).withBounds(16, 16);
     }

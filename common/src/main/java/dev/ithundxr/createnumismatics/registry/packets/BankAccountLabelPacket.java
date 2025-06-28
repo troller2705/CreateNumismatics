@@ -19,11 +19,7 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.NumismaticsClient;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -49,13 +45,6 @@ public class BankAccountLabelPacket implements S2CPacket {
         );
     }
 
-    public BankAccountLabelPacket(BankAccount account) {
-        this(false, account.id, account.getLabel());
-    }
-
-    public BankAccountLabelPacket(SubAccount subAccount) {
-        this(true, subAccount.getAuthorizationID(), subAccount.getLabel());
-    }
 
     private BankAccountLabelPacket(boolean isSubAccount, @NotNull UUID id, @Nullable String label) {
         this.isSubAccount = isSubAccount;
@@ -63,13 +52,6 @@ public class BankAccountLabelPacket implements S2CPacket {
         this.label = label;
     }
 
-    public static BankAccountLabelPacket remove(BankAccount account) {
-        return new BankAccountLabelPacket(false, account.id, null);
-    }
-
-    public static BankAccountLabelPacket remove(SubAccount subAccount) {
-        return new BankAccountLabelPacket(true, subAccount.getAuthorizationID(), null);
-    }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
@@ -81,7 +63,6 @@ public class BankAccountLabelPacket implements S2CPacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void handle(Minecraft mc) {
         Map<UUID, String> labelMap = isSubAccount ? NumismaticsClient.subAccountLabels : NumismaticsClient.bankAccountLabels;
         if (label == null) {

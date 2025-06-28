@@ -18,9 +18,11 @@
 
 package dev.ithundxr.createnumismatics.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+
+import net.createmod.catnip.config.ConfigBase;
+
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForgeConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -53,25 +55,6 @@ public class NumismaticsConfig {
         return CONFIGS.get(type);
     }
 
-    private static <T extends ConfigBase> T register(Supplier<T> factory, ModConfig.Type side) {
-        Pair<T, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(builder -> {
-            T config = factory.get();
-            config.registerAll(builder);
-            return config;
-        });
-
-        T config = specPair.getLeft();
-        config.specification = specPair.getRight();
-        CONFIGS.put(side, config);
-        return config;
-    }
-
-    @ApiStatus.Internal
-    public static void registerCommon() {
-        client = register(CClient::new, ModConfig.Type.CLIENT);
-        common = register(CCommon::new, ModConfig.Type.COMMON);
-        server = register(CServer::new, ModConfig.Type.SERVER);
-    }
 
     public static void onLoad(ModConfig modConfig) {
         for (ConfigBase config : CONFIGS.values())

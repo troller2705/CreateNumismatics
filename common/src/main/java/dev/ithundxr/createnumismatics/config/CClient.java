@@ -18,10 +18,12 @@
 
 package dev.ithundxr.createnumismatics.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
+
+import net.createmod.catnip.config.ConfigBase;
 
 @SuppressWarnings("unused")
-public class CClient extends ConfigBase {
+public class CClient extends ConfigBase
+{
 
     public final ConfigGroup client = group(0, "client", Comments.client);
 

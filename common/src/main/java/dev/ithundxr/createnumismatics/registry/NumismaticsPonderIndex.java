@@ -18,11 +18,10 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 
 public class NumismaticsPonderIndex {
-    static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
+
 
     public static void register() {
 //        HELPER.forComponents(CRBlocks.SEMAPHORE)

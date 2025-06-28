@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.backend.IScrollableSlotMenu;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +37,5 @@ public record ScrollSlotPacket(int slot, double delta, boolean shiftHeld) implem
 
     @Override
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof IScrollableSlotMenu scrollableMenu) {
-            scrollableMenu.scrollSlot(slot, delta, shiftHeld);
-        }
     }
 }

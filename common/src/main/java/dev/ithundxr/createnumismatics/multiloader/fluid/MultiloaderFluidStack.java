@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.multiloader.fluid;
 
 import com.mojang.serialization.Codec;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,12 +29,10 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class MultiloaderFluidStack {
 
-    @ExpectPlatform
     private static Codec<MultiloaderFluidStack> makeCodec() {
         throw new AssertionError();
     }
 
-    @ExpectPlatform
     private static MultiloaderFluidStack makeEmpty() {
         throw new AssertionError();
     }
@@ -48,7 +45,6 @@ public abstract class MultiloaderFluidStack {
         return create(fluid, amount, null);
     }
 
-    @ExpectPlatform
     public static MultiloaderFluidStack create(Fluid fluid, long amount, @Nullable CompoundTag nbt) {
         throw new AssertionError();
     }
@@ -84,7 +80,6 @@ public abstract class MultiloaderFluidStack {
 
     public abstract CompoundTag writeToNBT(CompoundTag nbt);
 
-    @ExpectPlatform
     public static MultiloaderFluidStack loadFluidStackFromNBT(CompoundTag tag) {
         throw new AssertionError();
     }
@@ -110,7 +105,6 @@ public abstract class MultiloaderFluidStack {
         return getTag() != null;
     }
 
-    @ExpectPlatform
     public static MultiloaderFluidStack readFromPacket(FriendlyByteBuf buffer) {
         throw new AssertionError();
     }

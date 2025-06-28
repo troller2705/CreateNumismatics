@@ -18,10 +18,10 @@
 
 package dev.ithundxr.createnumismatics.content.coins;
 
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Containers;
@@ -50,19 +50,19 @@ public class DiscreteCoinBag implements CoinBag {
         }
     }
 
-    @Override
+
     public void add(Coin coin, int count) {
         this.coins.put(coin, get(coin).getFirst() + count);
         calculateValue();
     }
 
-    @Override
+
     public void subtract(Coin coin, int count) {
         this.coins.put(coin, Math.max(0, get(coin).getFirst() - count));
         calculateValue();
     }
 
-    @Override
+
     public void set(Coin coin, int count, int spurRemainder) {
         if (spurRemainder != 0) {
             Numismatics.LOGGER.warn("DiscreteCoinBag.set() called with spurRemainder != 0");
@@ -76,7 +76,7 @@ public class DiscreteCoinBag implements CoinBag {
         set(coin, count, 0);
     }
 
-    @Override
+
     public Couple<Integer> get(Coin coin) {
         return Couple.create(this.coins.getOrDefault(coin, 0), 0);
     }
@@ -85,7 +85,7 @@ public class DiscreteCoinBag implements CoinBag {
         return get(coin).getFirst();
     }
 
-    @Override
+
     public ItemStack asStack(Coin coin) {
         int amt = get(coin).getFirst();
         if (amt == 0)

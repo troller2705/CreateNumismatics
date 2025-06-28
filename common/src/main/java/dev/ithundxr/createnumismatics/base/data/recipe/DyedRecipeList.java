@@ -18,7 +18,7 @@
 
 package dev.ithundxr.createnumismatics.base.data.recipe;
 
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsRecipeProvider.GeneratedRecipe;
+import com.simibubi.create.api.data.recipe.BaseRecipeProvider;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +28,12 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-public class DyedRecipeList implements Iterable<GeneratedRecipe> {
+public class DyedRecipeList implements Iterable<BaseRecipeProvider.GeneratedRecipe> {
     private static final int COLOR_AMOUNT = DyeColor.values().length;
 
-    protected final GeneratedRecipe[] values = new GeneratedRecipe[getColorCount()];
+    protected final BaseRecipeProvider.GeneratedRecipe[] values = new BaseRecipeProvider.GeneratedRecipe[getColorCount()];
 
-    public DyedRecipeList(Function<@NotNull DyeColor, GeneratedRecipe> filler) {
+    public DyedRecipeList(Function<@NotNull DyeColor, BaseRecipeProvider.GeneratedRecipe> filler) {
         for (DyeColor color : DyeColor.values()) {
             values[color.ordinal()] = filler.apply(color);
         }
@@ -43,16 +43,16 @@ public class DyedRecipeList implements Iterable<GeneratedRecipe> {
         return COLOR_AMOUNT;
     }
 
-    public GeneratedRecipe get(@NotNull DyeColor color) {
+    public BaseRecipeProvider.GeneratedRecipe get(@NotNull DyeColor color) {
         return values[color.ordinal()];
     }
 
-    public GeneratedRecipe[] toArray() {
+    public BaseRecipeProvider.GeneratedRecipe[] toArray() {
         return Arrays.copyOf(values, values.length);
     }
 
     @Override
-    public Iterator<GeneratedRecipe> iterator() {
+    public Iterator<BaseRecipeProvider.GeneratedRecipe> iterator() {
         return new Iterator<>() {
             private int index = 0;
 
@@ -62,7 +62,7 @@ public class DyedRecipeList implements Iterable<GeneratedRecipe> {
             }
 
             @Override
-            public GeneratedRecipe next() {
+            public BaseRecipeProvider.GeneratedRecipe next() {
                 if (!hasNext())
                     throw new NoSuchElementException();
                 return values[index++];
@@ -71,7 +71,7 @@ public class DyedRecipeList implements Iterable<GeneratedRecipe> {
     }
 
     public static class NullableDyedRecipeList extends DyedRecipeList {
-        public NullableDyedRecipeList(Function<@Nullable DyeColor, GeneratedRecipe> filler) {
+        public NullableDyedRecipeList(Function<@Nullable DyeColor, BaseRecipeProvider.GeneratedRecipe> filler) {
             super(filler);
             values[values.length - 1] = filler.apply(null);
         }
@@ -82,7 +82,7 @@ public class DyedRecipeList implements Iterable<GeneratedRecipe> {
         }
 
         @Override
-        public GeneratedRecipe get(@Nullable DyeColor color) {
+        public BaseRecipeProvider.GeneratedRecipe get(@Nullable DyeColor color) {
             if (color == null)
                 return values[values.length - 1];
             return super.get(color);

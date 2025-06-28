@@ -18,8 +18,7 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
-import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
-import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
+
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +33,6 @@ public class ConfigureSubAccountPacket implements C2SPacket {
     private final @NotNull Type type;
 
     private @Nullable Integer limit;
-    private @Nullable AuthorizationType authorizationType;
     private @Nullable String label;
 
     public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @Nullable Integer limit) {
@@ -43,11 +41,6 @@ public class ConfigureSubAccountPacket implements C2SPacket {
         this.limit = limit;
     }
 
-    public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @NotNull AuthorizationType authorizationType) {
-        this(subAccountID, Type.AUTHORIZATION_TYPE);
-
-        this.authorizationType = authorizationType;
-    }
 
     public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @NotNull String label) {
         this(subAccountID, Type.LABEL);
@@ -69,7 +62,6 @@ public class ConfigureSubAccountPacket implements C2SPacket {
                     limit = buf.readVarInt();
                 break;
             case AUTHORIZATION_TYPE:
-                authorizationType = AuthorizationType.values()[buf.readByte()];
                 break;
             case LABEL:
                 label = buf.readUtf();
@@ -90,7 +82,6 @@ public class ConfigureSubAccountPacket implements C2SPacket {
                     buffer.writeVarInt(limit);
                 break;
             case AUTHORIZATION_TYPE:
-                buffer.writeByte(authorizationType.ordinal());
                 break;
             case LABEL:
                 buffer.writeUtf(label);
@@ -100,19 +91,7 @@ public class ConfigureSubAccountPacket implements C2SPacket {
 
     @Override
     public void handle(ServerPlayer sender) {
-        if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
-            switch (type) {
-                case LIMIT:
-                    subAccountListMenu.setLimit(subAccountID, limit);
-                    break;
-                case AUTHORIZATION_TYPE:
-                    subAccountListMenu.setAuthorizationType(subAccountID, authorizationType);
-                    break;
-                case LABEL:
-                    subAccountListMenu.setLabel(subAccountID, label);
-                    break;
-            }
-        }
+
     }
 
     private enum Type {

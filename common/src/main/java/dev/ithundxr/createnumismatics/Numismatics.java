@@ -25,18 +25,13 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
+
 import com.tterrag.registrate.providers.ProviderType;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
 import dev.ithundxr.createnumismatics.base.data.emi.EmiExcludedTagGen;
-import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
-import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
-import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.MethodVarHandleUtils;
@@ -54,24 +49,17 @@ public class Numismatics {
     public static final String MOD_ID = "numismatics";
     public static final String NAME = "Create: Numismatics";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
-    public static final GlobalBankManager BANK = new GlobalBankManager();
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
-    static {
-        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
-                .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
-        Tabs.MAIN.use();
-    }
 
     public static void init() {
         String createVersion = MethodVarHandleUtils.getStaticField(Create.class, "VERSION", String.class, "UNKNOWN");
-        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, Create.VERSION, Loader.getFormatted());
+        LOGGER.info("{} initializing!", NAME);
         
         ModSetup.register();
         finalizeRegistrate();
 
-        registerCommands(NumismaticsCommands::register);
         NumismaticsPackets.PACKETS.registerC2SListener();
 
         if (Utils.isDevEnv() && Loader.FABRIC.isCurrent()) {
@@ -90,7 +78,6 @@ public class Numismatics {
         return REGISTRATE;
     }
 
-    @ExpectPlatform
     public static void finalizeRegistrate() {
         throw new AssertionError();
     }
@@ -98,16 +85,12 @@ public class Numismatics {
     public static void gatherData(DataGenerator.PackGenerator gen) {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        PonderLocalization.provideRegistrateLang(REGISTRATE);
-        gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
-        gen.addProvider(NumismaticsStandardRecipeGen::new);
         gen.addProvider(NumismaticsAdvancements::new);
         gen.addProvider(EmiExcludedTagGen::new);
     }
 
     public static ResourceLocation asResource(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static void crashDev(String message) {
@@ -118,7 +101,6 @@ public class Numismatics {
         }
     }
 
-    @ExpectPlatform
     public static void registerCommands(BiConsumer<CommandDispatcher<CommandSourceStack>, Boolean> consumer) {
         throw new AssertionError();
     }

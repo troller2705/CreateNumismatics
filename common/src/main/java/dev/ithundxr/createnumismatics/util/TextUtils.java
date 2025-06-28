@@ -19,8 +19,6 @@
 package dev.ithundxr.createnumismatics.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.utility.Components;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -99,13 +97,13 @@ public class TextUtils {
     }
 
     public static Component translateWithFormatting(String key, Object... args) {
-        MutableComponent base = Components.translatable(key, args);
+        MutableComponent base = Component.translatable(key, args);
         StringBuilder partsStringBuilder = new StringBuilder();
         base.visit((style, part) -> {
             partsStringBuilder.append(part);
             return Optional.empty();
         }, Style.EMPTY);
-        return Components.literal(partsStringBuilder.toString());
+        return Component.literal(partsStringBuilder.toString());
     }
 
     public static String formatInt(int num) {
@@ -134,13 +132,12 @@ public class TextUtils {
     }
 
     public static boolean isLeftToRight() {
-        return Components.translatable("numismatics.special.ltr")
+        return Component.translatable("numismatics.special.ltr")
             .getString()
             .toLowerCase(Locale.ROOT)
             .equals("true");
     }
 
-    @ExpectPlatform
     public static String formatFluid(long amount) {
         throw new AssertionError();
     }

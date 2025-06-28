@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import net.minecraft.core.Registry;
@@ -33,7 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Utils {
-    @ExpectPlatform
     public static boolean isDevEnv() {
         throw new AssertionError();
     }
@@ -44,7 +42,6 @@ public class Utils {
         return mutable.getValue();
     }
 
-    @ExpectPlatform
     public static void openScreen(ServerPlayer player, MenuProvider factory, Consumer<FriendlyByteBuf> extraDataWriter) {
         throw new AssertionError();
     }

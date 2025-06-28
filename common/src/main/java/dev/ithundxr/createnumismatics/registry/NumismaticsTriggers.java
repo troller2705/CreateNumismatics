@@ -18,7 +18,7 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import dev.ithundxr.createnumismatics.registry.advancement.CriterionTriggerBase;
+import com.simibubi.create.foundation.advancement.CriterionTriggerBase;
 import dev.ithundxr.createnumismatics.registry.advancement.SimpleNumismaticsTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 
@@ -38,8 +38,5 @@ public class NumismaticsTriggers {
 		return instance;
 	}
 
-	public static void register() {
-		triggers.forEach(CriteriaTriggers::register);
-	}
 
 }
