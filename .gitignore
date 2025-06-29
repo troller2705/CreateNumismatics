@@ -1,26 +1,26 @@
-build/
-*.ipr
-run/
-*.iws
-out/
-*.iml
-.gradle/
-output/
-bin/
-libs/
-
+# eclipse
+bin
+*.launch
+.settings
+.metadata
 .classpath
 .project
-.idea/
-classes/
-.metadata
-.vscode
-.settings
-*.launch
-/.architectury-transformer/
 
-# IThundxr - I keep the wiki repo under this one to make editing easier
-wiki/
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
 
-# Slimeist - Just some textures for blockbench
-/common/src/main/resources/assets/create/textures/block/
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+runs
+run-data
+
+repo

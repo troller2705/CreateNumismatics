@@ -1,0 +1,13 @@
+{
+  "itemGroup.numismatics": "Example Mod Tab",
+  "block.numismatics.example_block": "Example Block",
+  "item.numismatics.example_item": "Example Item",
+
+  "numismatics.configuration.title": "Create: Numismatics Configs",
+  "numismatics.configuration.section.numismatics.common.toml": "Create: Numismatics Configs",
+  "numismatics.configuration.section.numismatics.common.toml.title": "Create: Numismatics Configs",
+  "numismatics.configuration.items": "Item List",
+  "numismatics.configuration.logDirtBlock": "Log Dirt Block",
+  "numismatics.configuration.magicNumberIntroduction": "Magic Number Text",
+  "numismatics.configuration.magicNumber": "Magic Number"
+}

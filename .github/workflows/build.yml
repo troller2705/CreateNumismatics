@@ -1,34 +1,30 @@
 name: Build
 
-on: [workflow_dispatch, push, pull_request]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Java
-        run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
-
-      - name: Loom Cache
-        uses: actions/cache@v4
         with:
-          path: "**/.gradle/loom-cache"
-          key: "${{ runner.os }}-gradle-${{ hashFiles('**/libs.versions.*', '**/*.gradle*', '**/gradle-wrapper.properties') }}"
-          restore-keys: "${{ runner.os }}-gradle-"
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-home-cache-cleanup: true
-          cache-read-only: ${{ !endsWith(github.ref_name, '/dev') }}
 
-      - name: Validate Gradle Wrapper Integrity
-        uses: gradle/wrapper-validation-action@v2
+      # This is needed to be able to run ./gradlew below
+      # You can run `git update-index --chmod +x gradlew` then remove this step.
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
 
-      - name: Build & Publish to Maven
-        env:
-          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-        run: ./gradlew build publish
+      - name: Build with Gradle
+        run: ./gradlew build

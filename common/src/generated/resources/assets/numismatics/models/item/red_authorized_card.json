@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "numismatics:item/authorized_card/red_authorized_card"
-  }
-}
