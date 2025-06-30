@@ -1,8 +1,13 @@
 package dev.ithundxr.createnumismatics;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.registry.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 import net.neoforged.bus.api.IEventBus;
@@ -31,12 +36,18 @@ public class Numismatics {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
+    static {
+        REGISTRATE
+                .defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
+    }
+
     public Numismatics(IEventBus modEventBus, ModContainer modContainer) {
         LOGGER.info("{} initializing!", NAME);
 
         REGISTRATE.registerEventListeners(modEventBus);
 
-        NumismaticsCreativeModeTabs.register();
+        NumismaticsConfig.register(modContainer);
+        NumismaticsCreativeModeTabs.register(modEventBus);
         NumismaticsItems.register();
         NumismaticsBlockEntities.register();
         NumismaticsBlocks.register();
@@ -45,7 +56,7 @@ public class Numismatics {
 
         modEventBus.addListener(this::commonSetup);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+//        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

@@ -3,6 +3,7 @@ package dev.ithundxr.createnumismatics.content.backend;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -116,7 +117,7 @@ public enum Coin implements INamedIconOptions {
     }
 
     public Coin getDescription() {
-        return Coin.valueOf(getTranslationKey());
+        return this.value < NumismaticsConfig.common().referenceCoin.get().value ? SPUR : NumismaticsConfig.common().referenceCoin.get();
     }
 
     public ItemStack asStack() {

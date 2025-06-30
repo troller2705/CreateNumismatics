@@ -23,14 +23,20 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,187 +47,20 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class NumismaticsCreativeModeTabs {
-    public static CreativeModeTab getBaseTab() {
-        throw new AssertionError();
-    }
+    private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Numismatics.MODID);
 
-    public static ResourceKey<CreativeModeTab> getBaseTabKey() {
-        throw new AssertionError();
-    }
-
-    public static void register() {
-        // just to load class
-    }
-
-    public enum Tabs {
-        MAIN(NumismaticsCreativeModeTabs::getBaseTabKey),
-        ;
-
-        private final Supplier<ResourceKey<CreativeModeTab>> keySupplier;
-
-        Tabs(Supplier<ResourceKey<CreativeModeTab>> keySupplier) {
-            this.keySupplier = keySupplier;
-        }
-
-        public ResourceKey<CreativeModeTab> getKey() {
-            return keySupplier.get();
-        }
-
-        public void use() {
-            use(this);
-        }
-
-        private static void use(Tabs tab) {
-            throw new AssertionError();
-        }
-    }
-    
-    public static final class RegistrateDisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
-
-        private final Tabs tab;
-
-        public RegistrateDisplayItemsGenerator(Tabs tab) {
-            this.tab = tab;
-        }
-
-        private static Predicate<Item> makeExclusionPredicate() {
-            Set<Item> exclusions = new ReferenceOpenHashSet<>();
-
-
-            return (item) -> exclusions.contains(item) || item instanceof SequencedAssemblyItem;
-        }
-
-        private static List<ItemOrdering> makeOrderings() {
-            List<ItemOrdering> orderings = new ReferenceArrayList<>();
-
-
-            return orderings;
-        }
-
-        private static Function<Item, ItemStack> makeStackFunc() {
-            Map<Item, Function<Item, ItemStack>> factories = new Reference2ReferenceOpenHashMap<>();
-
-
-            return item -> {
-                Function<Item, ItemStack> factory = factories.get(item);
-                if (factory != null) {
-                    return factory.apply(item);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = CREATIVE_MODE_TABS.register("numismatics.main_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.numismatics.main_tab"))
+            .icon(() -> NumismaticsItems.COINS.get(Coin.SPROCKET).asStack())
+            .displayItems((itemDisplayParameters, output) -> {
+                for (ItemEntry<CoinItem> coin : NumismaticsItems.COINS.values()){
+                    output.accept(coin);
                 }
-                return new ItemStack(item);
-            };
-        }
+            })
+            .build());
 
-        private static Function<Item, TabVisibility> makeVisibilityFunc() {
-            Map<Item, TabVisibility> visibilities = new Reference2ObjectOpenHashMap<>();
-
-
-            return item -> {
-                TabVisibility visibility = visibilities.get(item);
-                if (visibility != null) {
-                    return visibility;
-                }
-                return TabVisibility.PARENT_AND_SEARCH_TABS;
-            };
-        }
-
-        private static final DyeColor[] COLOR_ORDER = new DyeColor[] {
-            DyeColor.RED,
-            DyeColor.ORANGE,
-            DyeColor.YELLOW,
-            DyeColor.LIME,
-            DyeColor.GREEN,
-            DyeColor.LIGHT_BLUE,
-            DyeColor.CYAN,
-            DyeColor.BLUE,
-            DyeColor.PURPLE,
-            DyeColor.MAGENTA,
-            DyeColor.PINK,
-            DyeColor.BROWN,
-            DyeColor.BLACK,
-            DyeColor.GRAY,
-            DyeColor.LIGHT_GRAY,
-            DyeColor.WHITE
-        };
-
-        @Override
-        public void accept(CreativeModeTab.ItemDisplayParameters pParameters, CreativeModeTab.Output output) {
-            Predicate<Item> exclusionPredicate = makeExclusionPredicate();
-            List<ItemOrdering> orderings = makeOrderings();
-            Function<Item, ItemStack> stackFunc = makeStackFunc();
-            Function<Item, TabVisibility> visibilityFunc = makeVisibilityFunc();
-            ResourceKey<CreativeModeTab> tab = this.tab.getKey();
-
-            List<Item> items = new LinkedList<>();
-            Predicate<Item> is3d = Env.unsafeRunForDist(
-                    () -> () -> item -> Minecraft.getInstance().getItemRenderer().getModel(new ItemStack(item), null, null, 0).isGui3d(),
-                    () -> () -> item -> false // don't crash servers
-            );
-            items.addAll(collectItems(tab, is3d, true, exclusionPredicate));
-            items.addAll(collectBlocks(tab, exclusionPredicate));
-            items.addAll(collectItems(tab, is3d, false, exclusionPredicate));
-
-            applyOrderings(items, orderings);
-            outputAll(output, items, stackFunc, visibilityFunc);
-        }
-
-        private List<Item> collectBlocks(ResourceKey<CreativeModeTab> tab, Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-
-            items = new ReferenceArrayList<>(new ReferenceLinkedOpenHashSet<>(items));
-            return items;
-        }
-
-        private List<Item> collectItems(ResourceKey<CreativeModeTab> tab, Predicate<Item> is3d, boolean special,
-                                        Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-
-            return items;
-        }
-
-
-        private static void applyOrderings(List<Item> items, List<ItemOrdering> orderings) {
-            for (ItemOrdering ordering : orderings) {
-                int anchorIndex = items.indexOf(ordering.anchor());
-                if (anchorIndex != -1) {
-                    Item item = ordering.item();
-                    int itemIndex = items.indexOf(item);
-                    if (itemIndex != -1) {
-                        items.remove(itemIndex);
-                        if (itemIndex < anchorIndex) {
-                            anchorIndex--;
-                        }
-                    }
-                    if (ordering.type() == ItemOrdering.Type.AFTER) {
-                        items.add(anchorIndex + 1, item);
-                    } else {
-                        items.add(anchorIndex, item);
-                    }
-                }
-            }
-        }
-
-        private static void outputAll(CreativeModeTab.Output output, List<Item> items, Function<Item, ItemStack> stackFunc, Function<Item, TabVisibility> visibilityFunc) {
-            for (Item item : items) {
-                output.accept(stackFunc.apply(item), visibilityFunc.apply(item));
-            }
-        }
-
-        private record ItemOrdering(Item item, Item anchor, Type type) {
-            public static ItemOrdering before(Item item, Item anchor) {
-                return new ItemOrdering(item, anchor, Type.BEFORE);
-            }
-
-            public static ItemOrdering after(Item item, Item anchor) {
-                return new ItemOrdering(item, anchor, Type.AFTER);
-            }
-
-            public enum Type {
-                BEFORE,
-                AFTER;
-            }
-        }
+    public static void register(IEventBus modEventBus) {
+        CREATIVE_MODE_TABS.register(modEventBus);
     }
 
-    public record TabInfo(ResourceKey<CreativeModeTab> key, CreativeModeTab tab) {
-    }
 }

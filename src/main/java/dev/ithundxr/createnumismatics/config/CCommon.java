@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.config;
 
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.createmod.catnip.config.ConfigBase;
 
 
@@ -26,9 +27,8 @@ public class CCommon extends ConfigBase {
 
     public final net.createmod.catnip.config.ConfigBase.ConfigGroup coins = group(0, "coins", Comments.coins);
 
-    
-    // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CCommon.java
-    
+    public final ConfigEnum<Coin> referenceCoin = e(Coin.COG, "defaultCoin", Comments.referenceCoin);
+
     @Override
     public String getName() {
         return "common";

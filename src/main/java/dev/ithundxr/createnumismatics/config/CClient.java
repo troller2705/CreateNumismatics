@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.config;
 
 
 import net.createmod.catnip.config.ConfigBase;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 @SuppressWarnings("unused")
 public class CClient extends ConfigBase
@@ -27,6 +28,7 @@ public class CClient extends ConfigBase
 
     public final ConfigGroup client = group(0, "client", Comments.client);
 
+    public final ConfigBool example = b(false, "example", Comments.example);
     // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CClient.java
 
     @Override
@@ -36,5 +38,8 @@ public class CClient extends ConfigBase
 
     private static class Comments {
         static final String client = "Client-only settings - If you're looking for general settings, look inside your worlds serverconfig folder!";
+
+        static final String example = "Hello world!";
+
     }
 }

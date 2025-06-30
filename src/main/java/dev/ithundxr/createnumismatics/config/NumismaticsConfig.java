@@ -21,7 +21,9 @@ package dev.ithundxr.createnumismatics.config;
 
 import net.createmod.catnip.config.ConfigBase;
 
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForgeConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.ApiStatus;
@@ -42,17 +44,35 @@ public class NumismaticsConfig {
     public static CClient client() {
         return client;
     }
-
-    public static CCommon common() {
-        return common;
-    }
-
+    public static CCommon common() { return common; }
     public static CServer server() {
         return server;
     }
 
     public static ConfigBase byType(ModConfig.Type type) {
         return CONFIGS.get(type);
+    }
+
+
+    private static <T extends ConfigBase> T register(Supplier<T> factory, ModConfig.Type side, ModContainer modContainer) {
+        Pair<T, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(builder -> {
+            T config = factory.get();
+            config.registerAll(builder);
+            return config;
+        });
+
+        T config = specPair.getLeft();
+        config.specification = specPair.getRight();
+        CONFIGS.put(side, config);
+        modContainer.registerConfig(side, config.specification);
+        return config;
+    }
+
+
+    public static void register(ModContainer modContainer){
+        common = register(CCommon::new, ModConfig.Type.COMMON, modContainer);
+        client = register(CClient::new, ModConfig.Type.CLIENT, modContainer);
+        server = register(CServer::new, ModConfig.Type.SERVER, modContainer);
     }
 
 
