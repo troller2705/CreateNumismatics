@@ -1,0 +1,114 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.ithundxr.createnumismatics.compat;
+
+import net.createmod.catnip.lang.Lang;
+import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.fml.loading.moddiscovery.ModInfo;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+/**
+ * For compatibility with and without another mod present, we have to define load conditions of the specific code
+ */
+public enum Mods {
+	CARRYON("carryon"),
+	SODIUM("sodium"),
+	COMPUTERCRAFT("computercraft"),
+	EMI("emi"),
+	JEI("jei"),
+	CREATEADDITION("createaddition"),
+    RAILWAYS("railways");
+
+	public final boolean isLoaded;
+	public final boolean requiredForDataGen;
+	public final @Nullable String fabricId;
+
+	Mods() {
+		this(null, false);
+	}
+
+	Mods(@Nullable String fabricId) {
+		this(fabricId, false);
+	}
+
+	Mods(boolean requiredForDataGen) {
+		this(null, requiredForDataGen);
+	}
+
+	Mods(@Nullable String fabricId, boolean requiredForDataGen) {
+		this.fabricId = fabricId;
+		this.isLoaded = isModLoaded(asId(), fabricId);
+		this.requiredForDataGen = requiredForDataGen;
+	}
+
+	/**
+	 * @return the mod id
+	 */
+	public String asId() {
+		return Lang.asId(name());
+	}
+
+	@Deprecated(forRemoval = true)
+	public String asFabricId() {
+		return fabricId != null ? fabricId : asId();
+	}
+
+	/**
+	 * Simple hook to run code if a mod is installed
+	 * @param toRun will be run only if the mod is loaded
+	 * @return Optional.empty() if the mod is not loaded, otherwise an Optional of the return value of the given supplier
+	 */
+	public <T> Optional<T> runIfInstalled(Supplier<Supplier<T>> toRun) {
+		if (isLoaded)
+			return Optional.of(toRun.get().get());
+		return Optional.empty();
+	}
+
+	/**
+	 * Simple hook to execute code if a mod is installed
+	 * @param toExecute will be executed only if the mod is loaded
+	 */
+	public void executeIfInstalled(Supplier<Runnable> toExecute) {
+		if (isLoaded) {
+			toExecute.get().run();
+		}
+	}
+
+	public void assertForDataGen() {
+		assert (!requiredForDataGen || isLoaded);
+	}
+
+	public static boolean isModLoaded(String id) {
+		return isModLoaded(id, null);
+	}
+
+	public static boolean isModLoaded(String id, @Nullable String fabricId) {
+		List<ModInfo> mods = LoadingModList.get().getMods();
+		for (ModInfo mod : mods) {
+			if (mod.getModId().equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+}

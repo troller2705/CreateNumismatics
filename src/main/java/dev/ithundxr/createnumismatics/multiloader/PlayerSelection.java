@@ -1,0 +1,67 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.ithundxr.createnumismatics.multiloader;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.apache.commons.lang3.NotImplementedException;
+
+import java.util.function.Predicate;
+
+/**
+ * Find players to send S2C packets to.
+ */
+public class PlayerSelection {
+	public void accept(ResourceLocation id, FriendlyByteBuf buffer){
+		throw new NotImplementedException("PlayerSelection.java - accept()");
+	}
+
+	public static PlayerSelection all() {
+		throw new NotImplementedException("PlayerSelection.java - all()");
+	}
+
+	public static PlayerSelection allWith(Predicate<ServerPlayer> condition) {
+		throw new NotImplementedException("PlayerSelection.java - allWith()");
+	}
+
+	public static PlayerSelection of(ServerPlayer player) {
+		throw new NotImplementedException("PlayerSelection.java - of()");
+	}
+
+	public static PlayerSelection tracking(Entity entity) {
+		throw new NotImplementedException("PlayerSelection.java - tracking()");
+	}
+
+	public static PlayerSelection tracking(BlockEntity be) {
+		throw new NotImplementedException("PlayerSelection.java - tracking()");
+	}
+
+	public static PlayerSelection tracking(ServerLevel level, BlockPos pos) {
+		throw new NotImplementedException("PlayerSelection.java - tracking()");
+	}
+
+	public static PlayerSelection trackingAndSelf(ServerPlayer player) {
+		throw new NotImplementedException("PlayerSelection.java - trackingAndSelf()");
+	}
+}

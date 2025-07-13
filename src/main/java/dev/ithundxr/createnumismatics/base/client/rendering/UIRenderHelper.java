@@ -1,0 +1,78 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.ithundxr.createnumismatics.base.client.rendering;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.simibubi.create.foundation.gui.AllGuiTextures;
+import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import net.createmod.catnip.theme.Color;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import org.joml.Matrix4f;
+
+public class UIRenderHelper extends net.createmod.catnip.gui.UIRenderHelper {
+	public static void drawStretched(GuiGraphics graphics, int left, int top, int w, int h, int z, NumismaticsGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last()
+			.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + tex.width) / 256f,
+			tex.startY / 256f, (tex.startY + tex.height) / 256f);
+	}
+
+	public static void drawCropped(GuiGraphics graphics, int left, int top, int w, int h, int z, NumismaticsGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last()
+				.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + w) / 256f,
+			tex.startY / 256f, (tex.startY + h) / 256f);
+	}
+
+	public static void drawCropped(GuiGraphics graphics, int left, int top, int minU, int minV, int maxU, int maxV, int z, NumismaticsGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last().pose(), Color.WHITE,
+			left + minU, left + (maxU),
+			top + minV, top + (maxV), z,
+			(tex.startX + minU) / 256f, (tex.startX + maxU) / 256f,
+			(tex.startY + minV) / 256f, (tex.startY + maxV) / 256f);
+	}
+
+	public static void drawCropped(GuiGraphics graphics, int left, int top, int minU, int minV, int maxU, int maxV, int z, AllGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last().pose(), Color.WHITE,
+			left, left + maxU - minU,
+			top, top + maxV - minV, z,
+			(tex.getStartX() + minU) / 256f, (tex.getStartX() + maxU) / 256f,
+			(tex.getStartY() + minV) / 256f, (tex.getStartY() + maxV) / 256f);
+	}
+
+	private static void drawTexturedQuad(Matrix4f m, Color c, int left, int right, int top, int bot, int z, float u1, float u2, float v1, float v2) {
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+		bufferbuilder.addVertex(m, (float) left , (float) bot, (float) z).setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).setUv(u1, v2);
+		bufferbuilder.addVertex(m, (float) right, (float) bot, (float) z).setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).setUv(u2, v2);
+		bufferbuilder.addVertex(m, (float) right, (float) top, (float) z).setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).setUv(u2, v1);
+		bufferbuilder.addVertex(m, (float) left , (float) top, (float) z).setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).setUv(u1, v1);
+//		tesselator.end();
+		MeshData mesh = bufferbuilder.buildOrThrow();
+		BufferUploader.drawWithShader(mesh);
+		RenderSystem.disableBlend();
+	}
+}

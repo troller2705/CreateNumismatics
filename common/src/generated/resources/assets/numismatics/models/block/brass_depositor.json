@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "numismatics:block/depositor/brass_depositor_slot",
-    "particle": "create:block/brass_casing",
-    "side": "create:block/brass_casing",
-    "top": "numismatics:block/depositor/brass_depositor_select"
-  }
-}
